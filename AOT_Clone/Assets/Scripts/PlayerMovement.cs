@@ -92,8 +92,8 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
 
         // Handle drag
-        //if (grounded && !activeGrapple)
-        if(state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
+        if (grounded && !activeGrapple)
+        //if(state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -141,19 +141,20 @@ public class PlayerMovement : MonoBehaviour
     private void StateHandler()
     {
         // Mode - Dashing
-        if(dashing)
+        /*if(dashing)
         {
             state = MovementState.dashing;
             desiredMoveSpeed = dashSpeed;
             speedChangeFactor = dashSpeedChangeFactor;
-        }
+        }*/
 
         // Mode - Freeze
-        else if (freeze)
+        if (freeze)
         {
             state = MovementState.freeze;
             moveSpeed = 0;
             rb.velocity = Vector3.zero;
+            Debug.Log("PlayerMovement: Freeze is now called");
         }
 
         // Mode - Crouching
@@ -188,8 +189,8 @@ public class PlayerMovement : MonoBehaviour
                 desiredMoveSpeed = sprintSpeed;
         }
 
-        bool desiredMoveSpeedhasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
-        if(lastState == MovementState.dashing)    keepMomentum = true;
+     /*   bool desiredMoveSpeedhasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
+        if(lastStatovementState.dashing)    keepMomentum = true;e == M
       
         if(desiredMoveSpeedhasChanged)
         {
@@ -203,14 +204,14 @@ public class PlayerMovement : MonoBehaviour
                 StopAllCoroutines();
                 moveSpeed = desiredMoveSpeed;
             }  
-        }
-       
+        } */
+     /*  
         lastDesiredMoveSpeed = desiredMoveSpeed;
-        lastState = state;
+        lastState = state;*/
     }
 
     private float speedChangeFactor;
-
+/*
     private IEnumerator SmoothlyLerpMoveSPeed()
     {
         // smothly lerp movementSpeed to desired value
@@ -231,7 +232,7 @@ public class PlayerMovement : MonoBehaviour
         moveSpeed = desiredMoveSpeed;
         speedChangeFactor = 1f;
         keepMomentum = false;
-    }
+    }*/
 
     private void MovePlayer()
     {

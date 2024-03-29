@@ -96,6 +96,10 @@ public class Dashing : MonoBehaviour
         {
             rb.useGravity = true;
         }
+
+        pm.freeze = false;
+        Debug.Log($"Dashing: Freeze is now {pm.freeze}");
+
     }
 
     private Vector3 GetDirection(Transform forwardT)
