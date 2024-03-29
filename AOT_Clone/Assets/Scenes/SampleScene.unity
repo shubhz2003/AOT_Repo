@@ -641,6 +641,7 @@ MonoBehaviour:
   activeGrapple: 0
   state: 0
   dashing: 0
+  ddd: {fileID: 0}
 --- !u!114 &419286143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,23 +672,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 419286139}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b41eebb4c77a11c4a9eea5454e3173ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   orientation: {fileID: 262924510}
   playerCam: {fileID: 963194228}
-  useCameraForward: 0
+  useCameraForward: 1
   allowAllDirections: 1
   diableGravity: 1
   resetVel: 1
-  dashForce: 20
+  dashForce: 100
   dashUpwardForce: 0
   maxDashYSpeed: 15
   dashDuration: 0.25
   dashCd: 1.5
-  dashKey: 101
+  dashKey: 119
 --- !u!1 &511621013
 GameObject:
   m_ObjectHideFlags: 0

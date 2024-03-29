@@ -71,6 +71,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public bool dashing;
+    public Dashing ddd;
 
     private void Start()
     {
@@ -80,6 +81,8 @@ public class PlayerMovement : MonoBehaviour
 
         moveSpeed = walkSpeed;
         startYScale = transform.localScale.y;
+
+        ddd = GetComponent<Dashing>();
     }
 
     private void Update()
@@ -130,7 +133,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-        }    
+        } 
+        
+        if(Input.GetKey(KeyCode.W) && activeGrapple) 
+        {
+            ddd.Dash();
+        }
     }
 
     private float desiredMoveSpeed;

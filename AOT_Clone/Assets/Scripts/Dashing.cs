@@ -26,7 +26,7 @@ public class Dashing : MonoBehaviour
     public float dashCd;
     private float dashCdTimer;
 
-    public KeyCode dashKey = KeyCode.E;
+    public KeyCode dashKey = KeyCode.W;
 
     private void Start()
     {
@@ -47,7 +47,7 @@ public class Dashing : MonoBehaviour
         }
     }
 
-    private void Dash()
+    public void Dash()
     {
         if (dashCdTimer > 0) return;
         else dashCdTimer = dashCd;
