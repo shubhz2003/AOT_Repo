@@ -52,8 +52,8 @@ public class Dashing : MonoBehaviour
         if (dashCdTimer > 0) return;
         else dashCdTimer = dashCd;
 
-        pm.dashing = true;
-        pm.maxYSpeed = maxDashYSpeed;
+        //pm.dashing = true;
+        //pm.maxYSpeed = maxDashYSpeed;
 
         Transform forwardT;
 
@@ -89,8 +89,8 @@ public class Dashing : MonoBehaviour
 
     private void ResetDash()
     {
-        pm.dashing = false;
-        pm.maxYSpeed = 0;
+        //pm.dashing = false;
+        //pm.maxYSpeed = 0;
 
         if(diableGravity)
         {

@@ -9,11 +9,6 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
 
-    public float dashSpeed;
-    public float dashSpeedChangeFactor;
-
-    public float maxYSpeed;
-
     public float groundDrag;
 
     [Header("Jumping")]
@@ -66,11 +61,8 @@ public class PlayerMovement : MonoBehaviour
         walking,
         sprinting,
         crouching,
-        dashing,
         air
     }
-
-    public bool dashing;
 
     private void Start()
     {
@@ -93,7 +85,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Handle drag
         if (grounded && !activeGrapple)
-        //if(state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -110,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
 
@@ -120,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // start crouch
-        if (Input.GetKeyDown(crouchKey)) 
+        if (Input.GetKeyDown(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
@@ -130,114 +121,49 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-        }    
+        }
     }
-
-    private float desiredMoveSpeed;
-    private float lastDesiredMoveSpeed;
-    private MovementState lastState;
-    private bool keepMomentum;
 
     private void StateHandler()
     {
-        // Mode - Dashing
-        /*if(dashing)
-        {
-            state = MovementState.dashing;
-            desiredMoveSpeed = dashSpeed;
-            speedChangeFactor = dashSpeedChangeFactor;
-        }*/
-
         // Mode - Freeze
         if (freeze)
         {
             state = MovementState.freeze;
             moveSpeed = 0;
             rb.velocity = Vector3.zero;
-            Debug.Log("PlayerMovement: Freeze is now called");
         }
 
         // Mode - Crouching
         else if (Input.GetKey(crouchKey))
         {
             state = MovementState.crouching;
-            desiredMoveSpeed = crouchSpeed;
+            moveSpeed = crouchSpeed;
         }
 
         // Mode - Sprinting
-        else if(grounded && Input.GetKey(sprintKey))
+        else if (grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
-            desiredMoveSpeed = sprintSpeed;
+            moveSpeed = sprintSpeed;
         }
 
         // Mode - Walking
         else if (grounded)
         {
             state = MovementState.walking;
-            desiredMoveSpeed = walkSpeed;
+            moveSpeed = walkSpeed;
         }
 
         // Mode - Air
         else
         {
             state = MovementState.air;
-
-            if (desiredMoveSpeed < sprintSpeed)
-                desiredMoveSpeed = walkSpeed;
-            else
-                desiredMoveSpeed = sprintSpeed;
         }
-
-     /*   bool desiredMoveSpeedhasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
-        if(lastStatovementState.dashing)    keepMomentum = true;e == M
-      
-        if(desiredMoveSpeedhasChanged)
-        {
-            if(keepMomentum) 
-            {
-                StopAllCoroutines();
-                StartCoroutine(SmoothlyLerpMoveSPeed());
-            }
-            else 
-            {
-                StopAllCoroutines();
-                moveSpeed = desiredMoveSpeed;
-            }  
-        } */
-     /*  
-        lastDesiredMoveSpeed = desiredMoveSpeed;
-        lastState = state;*/
     }
-
-    private float speedChangeFactor;
-/*
-    private IEnumerator SmoothlyLerpMoveSPeed()
-    {
-        // smothly lerp movementSpeed to desired value
-        float time = 0;
-        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
-        float startValue = moveSpeed;
-
-        float boostFactor = speedChangeFactor;
-
-        while (time < difference) 
-        {
-            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
-            time += Time.deltaTime * boostFactor;
-            
-            yield return null;
-        }
-
-        moveSpeed = desiredMoveSpeed;
-        speedChangeFactor = 1f;
-        keepMomentum = false;
-    }*/
 
     private void MovePlayer()
     {
-        if (state == MovementState.dashing) return;
-
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -255,7 +181,7 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
         // in air
-        else if(!grounded)
+        else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         // turn gravity off while on slope
@@ -266,7 +192,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         // limit spped on slope
-        if (OnSlope() &&!exitingSlope)
+        if (OnSlope() && !exitingSlope)
         {
             if (rb.velocity.magnitude > moveSpeed)
                 rb.velocity = rb.velocity.normalized * moveSpeed;
@@ -283,11 +209,6 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
-        }
-        //limit y vel
-        if(maxYSpeed != 0 && rb.velocity.y > maxYSpeed)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, maxYSpeed, rb.velocity.z);
         }
     }
 
@@ -330,12 +251,12 @@ public class PlayerMovement : MonoBehaviour
     public void ResetRestrictions()
     {
         activeGrapple = false;
-       // Camera.DoFov(85f);
+        // Camera.DoFov(85f);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(enableMovementOnNextTouch)
+        if (enableMovementOnNextTouch)
         {
             enableMovementOnNextTouch = false;
             ResetRestrictions();
@@ -346,7 +267,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool OnSlope()
     {
-        if( Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;

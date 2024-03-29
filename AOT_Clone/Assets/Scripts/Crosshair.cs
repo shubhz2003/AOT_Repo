@@ -36,7 +36,7 @@ public class Crosshair : MonoBehaviour
             if (Input.GetAxis("Horizontal") != 0 ||
                 Input.GetAxis("Vertical") != 0 ||
                 Input.GetAxis("Mouse X") != 0 ||
-                Input.GetAxis("Mouse Y") != 0)
+                Input.GetAxis("Mouse Y") != 0 )
                 return true;
             else 
                 return false;

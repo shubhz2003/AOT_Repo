@@ -36,7 +36,7 @@ public class Grappling : MonoBehaviour
     {
         if (Input.GetKeyDown(grappleKey)) StartGrapple();
 
-        if (grapplingCdTimer > 0) 
+        if (grapplingCdTimer > 0)
             grapplingCdTimer -= Time.deltaTime;
     }
 
@@ -55,7 +55,7 @@ public class Grappling : MonoBehaviour
         pm.freeze = true;
 
         RaycastHit hit;
-        if(Physics.Raycast(cam.position, cam.forward, out hit, maxGrappleDistance, whatIsGrappleable))
+        if (Physics.Raycast(cam.position, cam.forward, out hit, maxGrappleDistance, whatIsGrappleable))
         {
             grapplePoint = hit.point;
 
@@ -75,8 +75,6 @@ public class Grappling : MonoBehaviour
     private void ExecuteGrapple()
     {
         pm.freeze = false;
-        Debug.Log("Grappling: Freeze is now: " + pm.freeze);
-
 
         Vector3 lowestPoint = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
 
@@ -93,8 +91,6 @@ public class Grappling : MonoBehaviour
     public void StopGrapple()
     {
         pm.freeze = false;
-        Debug.Log("Grappling: Freeze is now: " + pm.freeze);
-
 
         grappling = false;
 
