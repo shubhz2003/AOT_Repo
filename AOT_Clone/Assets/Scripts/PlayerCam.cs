@@ -34,4 +34,10 @@ public class PlayerCam : MonoBehaviour
         transform.rotation = cameraRotation;
         orientation.rotation = cameraRotation;
     }
+
+  /*  public void DoFov(float endValue)
+    {
+        GetComponent<Camera>().fieldOfView = endValue;
+
+    }*/
 }

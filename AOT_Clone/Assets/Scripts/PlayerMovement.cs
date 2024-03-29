@@ -9,6 +9,11 @@ public class PlayerMovement : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
 
+    public float dashSpeed;
+    public float dashSpeedChangeFactor;
+
+    public float maxYSpeed;
+
     public float groundDrag;
 
     [Header("Jumping")]
@@ -61,8 +66,11 @@ public class PlayerMovement : MonoBehaviour
         walking,
         sprinting,
         crouching,
+        dashing,
         air
     }
+
+    public bool dashing;
 
     private void Start()
     {
@@ -84,7 +92,8 @@ public class PlayerMovement : MonoBehaviour
         StateHandler();
 
         // Handle drag
-        if (grounded && !activeGrapple)
+        //if (grounded && !activeGrapple)
+        if(state == MovementState.walking || state == MovementState.sprinting || state == MovementState.crouching)
             rb.drag = groundDrag;
         else
             rb.drag = 0;
@@ -124,10 +133,23 @@ public class PlayerMovement : MonoBehaviour
         }    
     }
 
+    private float desiredMoveSpeed;
+    private float lastDesiredMoveSpeed;
+    private MovementState lastState;
+    private bool keepMomentum;
+
     private void StateHandler()
     {
+        // Mode - Dashing
+        if(dashing)
+        {
+            state = MovementState.dashing;
+            desiredMoveSpeed = dashSpeed;
+            speedChangeFactor = dashSpeedChangeFactor;
+        }
+
         // Mode - Freeze
-        if (freeze)
+        else if (freeze)
         {
             state = MovementState.freeze;
             moveSpeed = 0;
@@ -138,32 +160,83 @@ public class PlayerMovement : MonoBehaviour
         else if (Input.GetKey(crouchKey))
         {
             state = MovementState.crouching;
-            moveSpeed = crouchSpeed;
+            desiredMoveSpeed = crouchSpeed;
         }
 
         // Mode - Sprinting
         else if(grounded && Input.GetKey(sprintKey))
         {
             state = MovementState.sprinting;
-            moveSpeed = sprintSpeed;
+            desiredMoveSpeed = sprintSpeed;
         }
 
         // Mode - Walking
         else if (grounded)
         {
             state = MovementState.walking;
-            moveSpeed = walkSpeed;
+            desiredMoveSpeed = walkSpeed;
         }
 
         // Mode - Air
         else
         {
             state = MovementState.air;
+
+            if (desiredMoveSpeed < sprintSpeed)
+                desiredMoveSpeed = walkSpeed;
+            else
+                desiredMoveSpeed = sprintSpeed;
         }
+
+        bool desiredMoveSpeedhasChanged = desiredMoveSpeed != lastDesiredMoveSpeed;
+        if(lastState == MovementState.dashing)    keepMomentum = true;
+      
+        if(desiredMoveSpeedhasChanged)
+        {
+            if(keepMomentum) 
+            {
+                StopAllCoroutines();
+                StartCoroutine(SmoothlyLerpMoveSPeed());
+            }
+            else 
+            {
+                StopAllCoroutines();
+                moveSpeed = desiredMoveSpeed;
+            }  
+        }
+       
+        lastDesiredMoveSpeed = desiredMoveSpeed;
+        lastState = state;
+    }
+
+    private float speedChangeFactor;
+
+    private IEnumerator SmoothlyLerpMoveSPeed()
+    {
+        // smothly lerp movementSpeed to desired value
+        float time = 0;
+        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
+        float startValue = moveSpeed;
+
+        float boostFactor = speedChangeFactor;
+
+        while (time < difference) 
+        {
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            time += Time.deltaTime * boostFactor;
+            
+            yield return null;
+        }
+
+        moveSpeed = desiredMoveSpeed;
+        speedChangeFactor = 1f;
+        keepMomentum = false;
     }
 
     private void MovePlayer()
     {
+        if (state == MovementState.dashing) return;
+
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -209,6 +282,11 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
+        }
+        //limit y vel
+        if(maxYSpeed != 0 && rb.velocity.y > maxYSpeed)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, maxYSpeed, rb.velocity.z);
         }
     }
 
