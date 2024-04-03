@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 65ae17bdbe19fe14fbfb67cddc7928a4
+guid: 24403bbea368ad0438c82a092a258ccc
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -33,19 +33,19 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Sword And Shield Attack
+      name: Unarmed Run Forward
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 52
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1
