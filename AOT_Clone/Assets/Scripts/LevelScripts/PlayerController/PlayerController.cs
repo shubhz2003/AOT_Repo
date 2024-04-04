@@ -11,16 +11,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce = 5.0f;
     [SerializeField] private Animator animator;
     [SerializeField] private CameraController camera;
+    private int health = 100;
+    public TextMeshProUGUI healthText;
 
     Quaternion requiredRoation;
     private Rigidbody rb;
     private bool isJumping;
     private bool isGrounded;
-   
 
+  
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>(); 
+        healthText.text = "Health: " + health.ToString();
+
     }
 
     private void Update()
@@ -31,7 +35,48 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
+
+
+
+       /* if (Input.GetKeyDown(grappleKey) && !isGrappling)
+        {
+            StartCoroutine(StartGrapple());
+        }*/
     }
+
+  /*  private IEnumerator StartGrapple()
+    {
+        
+        isGrappling = true;
+
+        Debug.Log("StartGrapple function");
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleDistance) && hit.collider.CompareTag(grappleTag))
+        {
+            grapplePoint = hit.point;
+            lineRenderer.SetPosition(0, transform.position);  // Set the start of the line
+            lineRenderer.SetPosition(1, grapplePoint);  // Set the end of the line
+            lineRenderer.enabled = true;
+            yield return new WaitForSeconds(0.5f);  // Delay before grappling
+            GrappleToPosition();
+        }
+        else
+        {
+            isGrappling = false;
+        }
+    }*/
+/*
+    private void GrappleToPosition()
+    {
+        Debug.Log("GrappleToPosition function");
+
+        // Calculate the direction and distance to the grapple point
+        Vector3 direction = (grapplePoint - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, grapplePoint);
+
+        // Apply a force in the direction of the grapple point
+        rb.AddForce(direction * distance * movementSpeed);
+    }*/
 
     void PlayerMovement()
     {
@@ -74,6 +119,17 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
             isJumping = false;
         }
+
+        if(collision.gameObject.tag == "Enemy")
+        {
+            health -= 2;
+            healthText.text = "Health: " + health.ToString();
+        }
+       /* if (isGrappling)
+        {
+            isGrappling = false;
+            lineRenderer.enabled = false;
+        }*/
     }
 
 
