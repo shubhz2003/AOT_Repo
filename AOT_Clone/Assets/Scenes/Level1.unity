@@ -199,9 +199,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 451553}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 451554}
   m_SourcePrefab: {fileID: 100100000, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
 --- !u!1 &451548 stripped
 GameObject:
@@ -229,7 +226,7 @@ MonoBehaviour:
   rotSpeed: 600
   jumpForce: 5
   animator: {fileID: 451551}
-  camera: {fileID: 1333874642}
+  cameraObj: {fileID: 1333874642}
   healthText: {fileID: 298626916}
 --- !u!95 &451551 stripped
 Animator:
@@ -286,28 +283,6 @@ CapsuleCollider:
   m_Height: 2.15
   m_Direction: 1
   m_Center: {x: -0.05, y: 1.03, z: 0}
---- !u!114 &451554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 451548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ec8b9e3ffeec86438b5e4b2af905a1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gunTip: {fileID: 1582812552}
-  whatIsGrappleable:
-    serializedVersion: 2
-    m_Bits: 1024
-  lr: {fileID: 693661359}
-  maxGrappleDistance: 25
-  grappleDelayTime: 0.25
-  overshootYAxis: 2
-  grapplingCd: 1
-  grappleKey: 324
 --- !u!1 &298626914
 GameObject:
   m_ObjectHideFlags: 0
@@ -654,6 +629,7 @@ GameObject:
   - component: {fileID: 693661361}
   - component: {fileID: 693661360}
   - component: {fileID: 693661359}
+  - component: {fileID: 693661364}
   m_Layer: 0
   m_Name: GrappleGun
   m_TagString: Untagged
@@ -708,7 +684,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 0.08
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -754,8 +730,8 @@ LineRenderer:
       m_ColorSpace: 0
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
+    numCornerVertices: 10
+    numCapVertices: 10
     alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
@@ -845,13 +821,30 @@ Transform:
   m_GameObject: {fileID: 693661358}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.732, y: 1.06, z: 0.043067932}
+  m_LocalPosition: {x: 0.7630005, y: 1.1860008, z: 0.12807083}
   m_LocalScale: {x: 0.26366663, y: 0.18574001, z: 0.55894}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1582812552}
   m_Father: {fileID: 451549}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &693661364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 693661358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d380b01bd93e044888be83f3dbe360d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whatIsGrappleable:
+    serializedVersion: 2
+    m_Bits: 1024
+  gunTip: {fileID: 1582812552}
+  player: {fileID: 451549}
 --- !u!1 &1257281854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +1002,7 @@ GameObject:
   - component: {fileID: 1319599241}
   - component: {fileID: 1319599240}
   m_Layer: 5
-  m_Name: Canva
+  m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

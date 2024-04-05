@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public float rotSpeed = 600.0f;
     [SerializeField] private float jumpForce = 5.0f;
     [SerializeField] private Animator animator;
-    [SerializeField] private CameraController camera;
+    [SerializeField] private CameraController cameraObj;
     private int health = 100;
     public TextMeshProUGUI healthText;
 
@@ -35,48 +35,7 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
-
-
-
-       /* if (Input.GetKeyDown(grappleKey) && !isGrappling)
-        {
-            StartCoroutine(StartGrapple());
-        }*/
     }
-
-  /*  private IEnumerator StartGrapple()
-    {
-        
-        isGrappling = true;
-
-        Debug.Log("StartGrapple function");
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, maxGrappleDistance) && hit.collider.CompareTag(grappleTag))
-        {
-            grapplePoint = hit.point;
-            lineRenderer.SetPosition(0, transform.position);  // Set the start of the line
-            lineRenderer.SetPosition(1, grapplePoint);  // Set the end of the line
-            lineRenderer.enabled = true;
-            yield return new WaitForSeconds(0.5f);  // Delay before grappling
-            GrappleToPosition();
-        }
-        else
-        {
-            isGrappling = false;
-        }
-    }*/
-/*
-    private void GrappleToPosition()
-    {
-        Debug.Log("GrappleToPosition function");
-
-        // Calculate the direction and distance to the grapple point
-        Vector3 direction = (grapplePoint - transform.position).normalized;
-        float distance = Vector3.Distance(transform.position, grapplePoint);
-
-        // Apply a force in the direction of the grapple point
-        rb.AddForce(direction * distance * movementSpeed);
-    }*/
 
     void PlayerMovement()
     {
@@ -87,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
         var movementInput = (new Vector3(horizontal, 0, vertical)).normalized;
 
-        var movementDirection = camera.flatRotation * movementInput;
+        var movementDirection = cameraObj.flatRotation * movementInput;
 
         if (movementAmount > 0)
         {
@@ -120,16 +79,11 @@ public class PlayerController : MonoBehaviour
             isJumping = false;
         }
 
-        if(collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy")
         {
             health -= 2;
             healthText.text = "Health: " + health.ToString();
         }
-       /* if (isGrappling)
-        {
-            isGrappling = false;
-            lineRenderer.enabled = false;
-        }*/
     }
 
 
