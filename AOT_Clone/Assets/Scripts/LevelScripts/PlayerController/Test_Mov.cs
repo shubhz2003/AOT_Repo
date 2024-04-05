@@ -156,5 +156,10 @@ public class TestMove : MonoBehaviour
             // Re-enable root motion when a collision occurs
             animator.applyRootMotion = true;
         }
+        if (collision.gameObject.tag == "Enemy")
+        {
+            health -= 2;
+            healthText.text = "Health: " + health.ToString();
+        }
     }
 }

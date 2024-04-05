@@ -651,7 +651,6 @@ GameObject:
   - component: {fileID: 693661361}
   - component: {fileID: 693661360}
   - component: {fileID: 693661359}
-  - component: {fileID: 693661364}
   m_Layer: 0
   m_Name: GrappleGun
   m_TagString: Untagged
@@ -850,24 +849,6 @@ Transform:
   - {fileID: 1582812552}
   m_Father: {fileID: 451549}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &693661364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 693661358}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d380b01bd93e044888be83f3dbe360d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  whatIsGrappleable:
-    serializedVersion: 2
-    m_Bits: 1024
-  gunTip: {fileID: 1582812552}
-  player: {fileID: 451549}
-  cameraObj: {fileID: 1333874641}
 --- !u!1 &1257281854
 GameObject:
   m_ObjectHideFlags: 0
