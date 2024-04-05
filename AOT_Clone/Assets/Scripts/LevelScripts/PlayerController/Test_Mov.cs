@@ -12,14 +12,17 @@ public class TestMove : MonoBehaviour
     private int health = 100;
     public TextMeshProUGUI healthText;
 
-    public float grappleSpeed = 1.0f; // Speed of grappling movement
+    public float grappleSpeed = 1.0f;
     private Vector3 targetPosition;
-    private bool isGrappling = false; // Flag to control if the player is grappling
+    private bool isGrappling = false; 
+    
 
-  //  public GameObject cube; // The cube that will be attached to the character
-  //  public LineRenderer line;
-    //public Transform raycastStartPoint;
+  
+    public LineRenderer lineRendererLeft;
+    public Transform startPointLeft;
 
+    public LineRenderer lineRendererRight;
+    public Transform startPointRight;
 
     Quaternion requiredRoation;
     private Rigidbody rb;
@@ -30,79 +33,78 @@ public class TestMove : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         healthText.text = "Health: " + health.ToString();
-        targetPosition = transform.position; // Initialize targetPosition to the current position
-
-       // line = cube.GetComponent<LineRenderer>();
+        targetPosition = transform.position; 
     }
 
     private void Update()
     {
         PlayerMovement();
-        /*Debug.Log("LineRenderer: " + line);
-        Debug.Log("Cube: " + cube);*/
+        
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
             Jump();
         }
-
-        // Check if the right mouse button was clicked
         if (Input.GetMouseButtonDown(1))
         {
             Debug.Log("Right mouse button was pressed");
-            // Create a ray from the mouse cursor on screen in the direction of the camera
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-           // Ray ray = new Ray(raycastStartPoint.position, Camera.main.transform.forward);
-
             RaycastHit hit;
 
-            // Perform the raycast
             if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log("Raycast Check");
 
-                // If we hit a game object with a collider
+
                 var target = hit.transform.gameObject;
 
-                // Check if the game object has the tag "Grap"
                 if (target.tag == "Grap")
                 {
-                    // Set the target position to the exact point of impact
+                    lineRendererLeft.enabled = true;
+                    lineRendererRight.enabled = true;
+
+                    lineRendererLeft.positionCount = 2;
+                    lineRendererRight.positionCount = 2;
+
                     targetPosition = hit.point;
                     isGrappling = true;
-                    // Disable gravity while grappling
+
                     rb.useGravity = false;
-                    // Disable root motion while grappling
+
                     animator.applyRootMotion = false;
                     Debug.Log("Target Locked");
-                   /* line.enabled = true;
-                    line.SetPosition(0, cube.transform.position);
-                    line.SetPosition(1, targetPosition);*/
+                    lineRendererLeft.SetPosition(0, startPointLeft.position);
+                    lineRendererLeft.SetPosition(1, targetPosition);
 
+                    lineRendererRight.SetPosition(0, startPointRight.position);
+                    lineRendererRight.SetPosition(1, targetPosition);
+
+                    Vector3 direction = (targetPosition - transform.position).normalized;
                 }
             }
         }
 
-        // Move this game object towards the target position only when grappling
         if (isGrappling)
         {
             Debug.Log("GRAPPLE MODE");
-
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, grappleSpeed * Time.deltaTime);
-            // If the game object has reached the target position, re-enable gravity
+            lineRendererLeft.SetPosition(0, startPointLeft.position);
+            lineRendererRight.SetPosition(0, startPointRight.position);
+
+
             if (transform.position == targetPosition)
             {
                 isGrappling = false;
                 rb.useGravity = true;
-                // Re-enable root motion when not grappling
                 animator.applyRootMotion = true;
-              //  line.enabled = false;
+              
+                lineRendererLeft.enabled = false;
+                lineRendererRight.enabled = false;
+
+                lineRendererLeft.positionCount = 0; 
+                lineRendererRight.positionCount = 0;
+
             }
-            else
-            {
-                // Update the LineRenderer's positions
-                /*line.SetPosition(0, cube.transform.position);
-                line.SetPosition(1, targetPosition);*/
-            }
+
         }
     }
 
@@ -127,7 +129,6 @@ public class TestMove : MonoBehaviour
 
         animator.SetFloat("moveValue", movementAmount, 0.2f, Time.deltaTime);
 
-        // Update animator parameters
         animator.SetBool("isJumping", isJumping);
         animator.SetBool("isFalling", !isGrounded && rb.velocity.y <= 0);
         animator.SetBool("isGrounded", isGrounded);
@@ -151,9 +152,7 @@ public class TestMove : MonoBehaviour
         if (collision.gameObject.tag == "Grap")
         {
             isGrappling = false;
-            // Re-enable gravity when a collision occurs
             rb.useGravity = true;
-            // Re-enable root motion when a collision occurs
             animator.applyRootMotion = true;
         }
         if (collision.gameObject.tag == "Enemy")
