@@ -199,6 +199,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 451553}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 451554}
   m_SourcePrefab: {fileID: 100100000, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
 --- !u!1 &451548 stripped
 GameObject:
@@ -217,7 +220,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451548}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d24b77c2278ed8e408891400f7fbef1d, type: 3}
   m_Name: 
@@ -283,6 +286,25 @@ CapsuleCollider:
   m_Height: 2.15
   m_Direction: 1
   m_Center: {x: -0.05, y: 1.03, z: 0}
+--- !u!114 &451554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a53d328d07b2514cb00f4ae26e62ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 3
+  rotSpeed: 600
+  jumpForce: 5
+  animator: {fileID: 451551}
+  cameraObj: {fileID: 1333874642}
+  healthText: {fileID: 298626916}
+  grappleSpeed: 30
 --- !u!1 &298626914
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,7 +547,7 @@ GameObject:
   - component: {fileID: 633477540}
   m_Layer: 10
   m_Name: Cube
-  m_TagString: Grappleable
+  m_TagString: Grap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -610,8 +632,8 @@ Transform:
   m_GameObject: {fileID: 633477539}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.28, y: 4.14, z: -6.9386835}
-  m_LocalScale: {x: 2.8293, y: 2.0506, z: 1.2825}
+  m_LocalPosition: {x: -14.13, y: 3.72, z: -14.01}
+  m_LocalScale: {x: 6.8486032, y: 8.538881, z: 1.2825}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -835,7 +857,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 693661358}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d380b01bd93e044888be83f3dbe360d, type: 3}
   m_Name: 
@@ -845,6 +867,7 @@ MonoBehaviour:
     m_Bits: 1024
   gunTip: {fileID: 1582812552}
   player: {fileID: 451549}
+  cameraObj: {fileID: 1333874641}
 --- !u!1 &1257281854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,7 +1346,7 @@ GameObject:
   - component: {fileID: 1506674131}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Enemy
+  m_TagString: Grap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
