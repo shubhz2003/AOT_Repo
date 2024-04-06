@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class TestMove : MonoBehaviour
 {
@@ -14,10 +15,12 @@ public class TestMove : MonoBehaviour
 
     public float grappleSpeed = 1.0f;
     private Vector3 targetPosition;
-    private bool isGrappling = false; 
-    
+    private bool isGrappling = false;
 
-  
+    public bool isRaging = false;
+    private float rageEndTime;
+    private float rageMovementSpeed = 9.0f;
+
     public LineRenderer lineRendererLeft;
     public Transform startPointLeft;
 
@@ -38,6 +41,16 @@ public class TestMove : MonoBehaviour
 
     private void Update()
     {
+        //Stamina testing
+        //if (Input.GetKeyDown(KeyCode.E))
+        //    StaminaBar.instance.UseStamina(15);
+
+        if (Input.GetKeyDown(KeyCode.E) && StaminaBar.instance.currentStamina == 100 && !isRaging)
+        {
+            StaminaBar.instance.UseStamina(100);
+            StartCoroutine(StartRageMode());
+        }
+
         PlayerMovement();
         
         if (isGrounded && Input.GetButtonDown("Jump"))
@@ -121,7 +134,8 @@ public class TestMove : MonoBehaviour
 
         if (movementAmount > 0 && !isGrappling)
         {
-            transform.position += movementDirection * movementSpeed * Time.deltaTime;
+            float speed = isRaging ? rageMovementSpeed : movementSpeed;
+            transform.position += movementDirection * speed * Time.deltaTime;
             requiredRoation = Quaternion.LookRotation(movementDirection);
         }
 
@@ -160,5 +174,62 @@ public class TestMove : MonoBehaviour
             health -= 2;
             healthText.text = "Health: " + health.ToString();
         }
+    }
+
+    private IEnumerator StartRageMode()
+    {
+        rageEndTime = Time.time + 30;
+
+        isRaging = true;
+        animator.SetBool("isRaging", true); // Start the Rage animation
+
+        // Scale the player slowly over time
+        float scaleTime = animator.GetCurrentAnimatorStateInfo(0).length; // Get the length of the Rage animation
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale * 3;
+        float originalGap = cameraObj.gap;
+        float targetGap = originalGap * 3;
+        for (float t = 0; t < scaleTime; t += Time.deltaTime)
+        {
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t / scaleTime);
+            cameraObj.gap = Mathf.Lerp(originalGap, targetGap, t / scaleTime);
+            yield return null;
+        }
+        transform.localScale = targetScale; // Ensure the target scale is reached
+        cameraObj.gap = targetGap;
+        animator.speed = 0.3f;
+
+        //isRaging = false;
+        animator.SetBool("isRaging", false);
+
+        // Wait until the Rage mode should end
+        while (Time.time < rageEndTime)
+        {
+            yield return null;
+        }
+
+        StartCoroutine(EndRageMode());
+    }
+
+    private IEnumerator EndRageMode()
+    {
+        // Scale the player and the camera gap back to normal slowly over time
+        float scaleTime = animator.GetCurrentAnimatorStateInfo(0).length; // Get the length of the Rage animation
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale / 3;
+        float originalGap = cameraObj.gap;
+        float targetGap = originalGap / 3;
+        for (float t = 0; t < scaleTime; t += Time.deltaTime)
+        {
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t / scaleTime);
+            cameraObj.gap = Mathf.Lerp(originalGap, targetGap, t / scaleTime);
+            yield return null;
+        }
+        transform.localScale = targetScale; // Ensure the target scale is reached
+        cameraObj.gap = targetGap; // Ensure the target gap is reached
+
+        isRaging = false;
+        animator.SetBool("isRaging", false);
+        animator.speed = 1.0f;
     }
 }
