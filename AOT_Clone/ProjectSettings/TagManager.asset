@@ -8,6 +8,8 @@ TagManager:
   - Grappleable
   - Enemy
   - Grap
+  - checkpoint
+  - TitanRightHand
   layers:
   - Default
   - TransparentFX

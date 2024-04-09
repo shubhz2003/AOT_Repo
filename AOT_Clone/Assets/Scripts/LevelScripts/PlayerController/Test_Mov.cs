@@ -41,10 +41,6 @@ public class TestMove : MonoBehaviour
 
     private void Update()
     {
-        //Stamina testing
-        //if (Input.GetKeyDown(KeyCode.E))
-        //    StaminaBar.instance.UseStamina(15);
-
         if (Input.GetKeyDown(KeyCode.E) && StaminaBar.instance.currentStamina == 100 && !isRaging)
         {
             StaminaBar.instance.UseStamina(100);
@@ -169,11 +165,13 @@ public class TestMove : MonoBehaviour
             rb.useGravity = true;
             animator.applyRootMotion = true;
         }
-        if (collision.gameObject.tag == "Enemy")
-        {
-            health -= 2;
-            healthText.text = "Health: " + health.ToString();
-        }
+        
+    }
+
+    public void DecreaseHealth()
+    {
+        health -= 2;
+        healthText.text = "Health: " + health.ToString();
     }
 
     private IEnumerator StartRageMode()
