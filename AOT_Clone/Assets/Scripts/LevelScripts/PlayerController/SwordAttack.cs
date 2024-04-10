@@ -5,21 +5,24 @@ using UnityEngine;
 public class SwordAttack : MonoBehaviour
 {
     private GameObject enemy;
-    private AIMoveLogic enemyScript;
+   
 
     private void Start()
     {
         enemy = GameObject.FindGameObjectWithTag("Enemy");
-        enemyScript = enemy.GetComponent<AIMoveLogic>();
-        Debug.Log("Fist Check");
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == enemy)
+        //if (other.gameObject == enemy)
+        //{
+           
+        //}
+        if(other.gameObject.tag == "Neck") 
         {
-            Debug.Log("Right hand found");
-            enemyScript.TakeHit();
+            Debug.Log("Neck hit");
+            enemy.gameObject.GetComponent<AIMoveLogic>().Death();
+
         }
     }
 }

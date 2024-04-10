@@ -174,6 +174,12 @@ public class TestMove : MonoBehaviour
             rb.useGravity = true;
             animator.applyRootMotion = true;
         }
+
+        if(collision.gameObject.tag == "Enemy")
+        {
+            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(),
+                                     collision.gameObject.GetComponent<Collider>());
+        }
         
     }
 
@@ -203,8 +209,7 @@ public class TestMove : MonoBehaviour
         isRaging = true;
         animator.SetBool("isRaging", true); // Start the Rage animation
 
-        // Scale the player slowly over time
-        float scaleTime = animator.GetCurrentAnimatorStateInfo(0).length; // Get the length of the Rage animation
+        float scaleTime = 3.0f;
         Vector3 originalScale = transform.localScale;
         Vector3 targetScale = originalScale * 3;
         float originalGap = cameraObj.gap;
@@ -215,11 +220,10 @@ public class TestMove : MonoBehaviour
             cameraObj.gap = Mathf.Lerp(originalGap, targetGap, t / scaleTime);
             yield return null;
         }
+
         transform.localScale = targetScale; // Ensure the target scale is reached
         cameraObj.gap = targetGap;
         animator.speed = 0.3f;
-
-        //isRaging = false;
         animator.SetBool("isRaging", false);
 
         // Wait until the Rage mode should end

@@ -124,6 +124,18 @@ public class AIMoveLogic : MonoBehaviour
         }
     }
 
+    public void Death()
+    {
+        animator.SetBool("titanIsDead", true);
+        StartCoroutine(DestroyAfterDelay());
+    }
+
+    private IEnumerator DestroyAfterDelay()
+    {
+        gameObject.GetComponent<AIMoveLogic>().enabled = false;
+        yield return new WaitForSeconds(10);
+        Destroy(gameObject);
+    }
 
     private void GenerateNewTarget()
     {

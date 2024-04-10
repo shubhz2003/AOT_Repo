@@ -10,6 +10,7 @@ TagManager:
   - Grap
   - checkpoint
   - TitanRightHand
+  - Neck
   layers:
   - Default
   - TransparentFX

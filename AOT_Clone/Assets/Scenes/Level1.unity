@@ -133,7 +133,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 59.4
+      value: 79.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -141,7 +141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -34.94
+      value: -81.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 55f5ae4a1867ea54a9851c0d8050b25b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -651,6 +651,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5195048882033904264, guid: 914cac6f91213504ea78b3057899e390, type: 3}
+      propertyPath: m_TagString
+      value: Neck
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 914cac6f91213504ea78b3057899e390, type: 3}
       propertyPath: m_Name
       value: Warrok W Kurniawan
@@ -680,6 +684,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 914cac6f91213504ea78b3057899e390, type: 3}
       insertIndex: -1
       addedObject: {fileID: 866509139}
+    - targetCorrespondingSourceObject: {fileID: -5195048882033904264, guid: 914cac6f91213504ea78b3057899e390, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1595463050}
     - targetCorrespondingSourceObject: {fileID: -3799395697873186154, guid: 914cac6f91213504ea78b3057899e390, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1853352685}
@@ -1521,10 +1528,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.28
   m_Height: 2.26
   m_Direction: 1
-  m_Center: {x: 0, y: 1.15, z: 0}
+  m_Center: {x: 0, y: 1.15, z: 0.18}
 --- !u!54 &866509141
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2623,6 +2630,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 693661363}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1595463048 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5195048882033904264, guid: 914cac6f91213504ea78b3057899e390, type: 3}
+  m_PrefabInstance: {fileID: 312920962}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1595463050
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1595463048}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.46, y: 0.34, z: 0.42}
+  m_Center: {x: 0, y: 0.12, z: -0.26}
 --- !u!1 &1630232422 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 1049ed8a5a57b4149a083f2ea6aba502, type: 3}
