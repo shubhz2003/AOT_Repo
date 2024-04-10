@@ -108,6 +108,7 @@ public class AIMoveLogic : MonoBehaviour
 
     private void MoveTowardsTarget()
     {
+        targetPosition.y = 0f;
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, characterSpeed * Time.deltaTime);
         float moveValue = Mathf.Clamp(characterSpeed / maxSpeed, 0, 1);
         animator.SetFloat("titanMoveValue", moveValue);

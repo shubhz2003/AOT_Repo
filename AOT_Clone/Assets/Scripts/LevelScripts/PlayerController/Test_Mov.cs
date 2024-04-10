@@ -207,11 +207,12 @@ public class TestMove : MonoBehaviour
         rageEndTime = Time.time + 30;
 
         isRaging = true;
-        animator.SetBool("isRaging", true); // Start the Rage animation
+        animator.CrossFade("Raging", 0.1f);
+        rb.constraints = RigidbodyConstraints.FreezePosition;
 
         float scaleTime = 3.0f;
         Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale * 3;
+        Vector3 targetScale = originalScale * 10;
         float originalGap = cameraObj.gap;
         float targetGap = originalGap * 3;
         for (float t = 0; t < scaleTime; t += Time.deltaTime)
@@ -224,7 +225,9 @@ public class TestMove : MonoBehaviour
         transform.localScale = targetScale; // Ensure the target scale is reached
         cameraObj.gap = targetGap;
         animator.speed = 0.3f;
-        animator.SetBool("isRaging", false);
+
+        animator.CrossFade("movement", 0.1f);
+        rb.constraints = RigidbodyConstraints.None;
 
         // Wait until the Rage mode should end
         while (Time.time < rageEndTime)
@@ -240,7 +243,7 @@ public class TestMove : MonoBehaviour
         // Scale the player and the camera gap back to normal slowly over time
         float scaleTime = animator.GetCurrentAnimatorStateInfo(0).length; // Get the length of the Rage animation
         Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale / 3;
+        Vector3 targetScale = originalScale / 10;
         float originalGap = cameraObj.gap;
         float targetGap = originalGap / 3;
         for (float t = 0; t < scaleTime; t += Time.deltaTime)
@@ -253,7 +256,6 @@ public class TestMove : MonoBehaviour
         cameraObj.gap = targetGap; // Ensure the target gap is reached
 
         isRaging = false;
-        animator.SetBool("isRaging", false);
         animator.speed = 1.0f;
     }
 }
