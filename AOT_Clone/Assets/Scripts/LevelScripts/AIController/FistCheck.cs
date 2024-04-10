@@ -11,14 +11,14 @@ public class FistCheck : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerScript = player.GetComponent<TestMove>();
-        Debug.Log("Fist Check");
+       // Debug.Log("Fist Check");
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject == player)
         {
-            Debug.Log("Right hand found");
+            //Debug.Log("Right hand found");
             playerScript.DecreaseHealth();
         }
     }

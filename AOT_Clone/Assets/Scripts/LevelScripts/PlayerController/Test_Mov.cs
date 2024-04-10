@@ -12,6 +12,8 @@ public class TestMove : MonoBehaviour
     [SerializeField] private CameraController cameraObj;
     private int health = 100;
     public TextMeshProUGUI healthText;
+    public GameObject leftBloodSword;
+    public GameObject rightBloodSword;
 
     public float grappleSpeed = 1.0f;
     private Vector3 targetPosition;
@@ -31,12 +33,15 @@ public class TestMove : MonoBehaviour
     private Rigidbody rb;
     private bool isJumping;
     private bool isGrounded;
-
+    private bool isAttacking;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         healthText.text = "Health: " + health.ToString();
         targetPosition = transform.position; 
+        isAttacking = false;  
+        leftBloodSword.SetActive(false);
+        rightBloodSword.SetActive(false);
     }
 
     private void Update()
@@ -48,7 +53,11 @@ public class TestMove : MonoBehaviour
         }
 
         PlayerMovement();
-        
+
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
+        {
+            StartCoroutine(Attack());
+        }
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
             Jump();
@@ -66,7 +75,7 @@ public class TestMove : MonoBehaviour
 
                 var target = hit.transform.gameObject;
 
-                if (target.tag == "Grap")
+                if (target.tag == "Grap" || target.tag == "Enemy")
                 {
                     lineRendererLeft.enabled = true;
                     lineRendererRight.enabled = true;
@@ -172,6 +181,19 @@ public class TestMove : MonoBehaviour
     {
         health -= 2;
         healthText.text = "Health: " + health.ToString();
+    }
+
+    private IEnumerator Attack()
+    {
+        isAttacking = true;
+        leftBloodSword.SetActive(true);
+        rightBloodSword.SetActive(true);
+        animator.SetBool("isAttacking", isAttacking);
+        yield return new WaitForSeconds(3f);
+        isAttacking = false;
+        animator.SetBool("isAttacking", isAttacking);
+        leftBloodSword.SetActive(false);
+        rightBloodSword.SetActive(false);
     }
 
     private IEnumerator StartRageMode()

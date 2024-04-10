@@ -150,5 +150,10 @@ public class AIMoveLogic : MonoBehaviour
         }
 
     }
+
+    public void TakeHit()
+    {
+        Debug.Log("Enemy was hit");
+    }
 }
 
