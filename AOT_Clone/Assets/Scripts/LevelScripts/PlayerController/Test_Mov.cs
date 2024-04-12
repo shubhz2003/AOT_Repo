@@ -54,7 +54,7 @@ public class TestMove : MonoBehaviour
 
         PlayerMovement();
 
-        if (Input.GetMouseButtonDown(0) && !isAttacking)
+        if (Input.GetMouseButtonDown(0) && !isAttacking && !isRaging)
         {
             StartCoroutine(Attack());
         }
@@ -162,7 +162,7 @@ public class TestMove : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Grap"))
         {
             isGrounded = true;
             isJumping = false;
