@@ -51,6 +51,7 @@ public class AIMoveLogic : MonoBehaviour
         isAttacking = true;
         animator.SetBool("titanIsAttacking", isAttacking);
         rb.isKinematic = true;
+        animator.speed = 0.2f;
         StartCoroutine(PerformAttack());
     }
 
@@ -62,21 +63,22 @@ public class AIMoveLogic : MonoBehaviour
         animator.SetBool("titanIsAttacking", isAttacking);
         yield return new WaitForSeconds(0.4f);
         characterSpeed = speed;
+        animator.speed = 0.5f;
     }
 
     private void Update()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-        if (distanceToPlayer <= 4f)
+        if (distanceToPlayer <= 6f)
         {
             AttackPlayer();
         }
-        else if (distanceToPlayer > 4f && distanceToPlayer <= 11f)
+        else if (distanceToPlayer > 6f && distanceToPlayer <= 13f)
         {
             ChasePlayer();
         }
-        else if (distanceToPlayer > 11f)
+        else if (distanceToPlayer > 13f)
         {
             isChasingPlayer = false;
             characterSpeed = speed;
