@@ -14,10 +14,6 @@ public class SwordAttack : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.gameObject == enemy)
-        //{
-           
-        //}
         if(other.gameObject.tag == "Neck") 
         {
             Debug.Log("Neck hit");
