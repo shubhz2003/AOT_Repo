@@ -10,6 +10,7 @@ public class TestMove : MonoBehaviour
     [SerializeField] private float jumpForce = 5.0f;
     [SerializeField] private Animator animator;
     [SerializeField] private CameraController cameraObj;
+    [SerializeField] private Collider fist;
     private int health = 100;
     public TextMeshProUGUI healthText;
     public GameObject leftBloodSword;
@@ -42,6 +43,7 @@ public class TestMove : MonoBehaviour
         isAttacking = false;  
         leftBloodSword.SetActive(false);
         rightBloodSword.SetActive(false);
+        fist.enabled = false;
     }
 
     private void Update()
@@ -54,7 +56,7 @@ public class TestMove : MonoBehaviour
 
         PlayerMovement();
 
-        if (Input.GetMouseButtonDown(0) && !isAttacking && !isRaging)
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
             StartCoroutine(Attack());
         }
@@ -192,12 +194,20 @@ public class TestMove : MonoBehaviour
     private IEnumerator Attack()
     {
         isAttacking = true;
-        leftBloodSword.SetActive(true);
-        rightBloodSword.SetActive(true);
+        if(animator.GetFloat("attackMode") == 0)
+        {
+            leftBloodSword.SetActive(true);
+            rightBloodSword.SetActive(true);
+        }
+        if (animator.GetFloat("attackMode") == 1)
+        {
+            fist.enabled = true;
+        }
         animator.SetBool("isAttacking", isAttacking);
         yield return new WaitForSeconds(3f);
         isAttacking = false;
         animator.SetBool("isAttacking", isAttacking);
+        fist.enabled = false;
         leftBloodSword.SetActive(false);
         rightBloodSword.SetActive(false);
     }
@@ -205,14 +215,14 @@ public class TestMove : MonoBehaviour
     private IEnumerator StartRageMode()
     {
         rageEndTime = Time.time + 30;
-
+        animator.SetFloat("attackMode", 1);
         isRaging = true;
         animator.CrossFade("Raging", 0.1f);
         rb.constraints = RigidbodyConstraints.FreezePosition;
 
         float scaleTime = 3.0f;
         Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale * 10;
+        Vector3 targetScale = originalScale * 5;
         float originalGap = cameraObj.gap;
         float targetGap = originalGap * 3;
         for (float t = 0; t < scaleTime; t += Time.deltaTime)
@@ -228,7 +238,7 @@ public class TestMove : MonoBehaviour
 
         animator.CrossFade("movement", 0.1f);
         rb.constraints = RigidbodyConstraints.None;
-
+        //animator.CrossFade("RageAttack", 0.1f);
         // Wait until the Rage mode should end
         while (Time.time < rageEndTime)
         {
@@ -243,7 +253,7 @@ public class TestMove : MonoBehaviour
         // Scale the player and the camera gap back to normal slowly over time
         float scaleTime = animator.GetCurrentAnimatorStateInfo(0).length; // Get the length of the Rage animation
         Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale / 10;
+        Vector3 targetScale = originalScale / 5;
         float originalGap = cameraObj.gap;
         float targetGap = originalGap / 3;
         for (float t = 0; t < scaleTime; t += Time.deltaTime)
@@ -257,5 +267,6 @@ public class TestMove : MonoBehaviour
 
         isRaging = false;
         animator.speed = 1.0f;
+        animator.SetFloat("attackMode", 0);
     }
 }
