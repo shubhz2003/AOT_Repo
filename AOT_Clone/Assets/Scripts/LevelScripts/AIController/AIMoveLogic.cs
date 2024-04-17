@@ -20,6 +20,9 @@ public class AIMoveLogic : MonoBehaviour
     private GameObject rightHandBone;
     private Collider rightHandCollider;
 
+    private GameObject neck;
+
+
 
     private void Start()
     {
@@ -74,11 +77,11 @@ public class AIMoveLogic : MonoBehaviour
         {
             AttackPlayer();
         }
-        else if (distanceToPlayer > 6f && distanceToPlayer <= 13f)
+        else if (distanceToPlayer > 6f && distanceToPlayer <= 30f)
         {
             ChasePlayer();
         }
-        else if (distanceToPlayer > 13f)
+        else if (distanceToPlayer > 30f)
         {
             isChasingPlayer = false;
             characterSpeed = speed;

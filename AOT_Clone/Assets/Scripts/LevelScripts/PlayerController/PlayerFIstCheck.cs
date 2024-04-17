@@ -7,8 +7,6 @@ public class PlayerFIstCheck : MonoBehaviour
     private GameObject titan;
     private AIMoveLogic enemyScript;
 
-   
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Enemy")

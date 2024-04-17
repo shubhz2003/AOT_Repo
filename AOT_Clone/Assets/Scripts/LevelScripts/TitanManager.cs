@@ -12,9 +12,9 @@ public class TitanManager : MonoBehaviour
         for (int i = 0; i < numberOfTitans; i++)
         {
             Vector3 spawnPosition = new Vector3(
-                Random.Range(-20f, 20f),
+                Random.Range(-300f, 300f),
                 0,
-                Random.Range(-20f, 20f)
+                Random.Range(-300f, 300f)
             );
 
             Instantiate(titanPrefab, spawnPosition, Quaternion.identity);

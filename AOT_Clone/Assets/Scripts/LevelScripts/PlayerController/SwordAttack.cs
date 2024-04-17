@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class SwordAttack : MonoBehaviour
 {
-    private GameObject enemy;
-   
-
-    private void Start()
-    {
-        enemy = GameObject.FindGameObjectWithTag("Enemy");
-    }
+    private GameObject titan;
+    private AIMoveLogic enemyScript;
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Neck") 
+        if (other.gameObject.tag == "Enemy")
         {
-            Debug.Log("Neck hit");
-            enemy.gameObject.GetComponent<AIMoveLogic>().Death();
-
+            titan = other.gameObject;
+            enemyScript = titan.GetComponent<AIMoveLogic>();
+            if (enemyScript != null)
+            {
+                enemyScript.Death();
+            }
         }
     }
 }
