@@ -11,7 +11,8 @@ public class TestMove : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private CameraController cameraObj;
     [SerializeField] private Collider fist;
-    private int health = 100;
+    private  int health = 100;
+    public int Health { get { return health; } private set { health = value; } }
     public TextMeshProUGUI healthText;
     public GameObject leftBloodSword;
     public GameObject rightBloodSword;
@@ -35,8 +36,18 @@ public class TestMove : MonoBehaviour
     private bool isJumping;
     private bool isGrounded;
     private bool isAttacking;
+
+    //Audio
+    private AudioSource backgroundAudio;
+    [SerializeField] private AudioClip playerRageAudio;
+    [SerializeField] private AudioClip takeDamage;
+
+    private AudioSource audioSource;
+
     private void Start()
     {
+        backgroundAudio = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         healthText.text = "Health: " + health.ToString();
         targetPosition = transform.position; 
@@ -48,14 +59,19 @@ public class TestMove : MonoBehaviour
 
     private void Update()
     {
+
+        //audioSource.clip = backgroundAudio;
+        //audioSource.Play();
         if (Input.GetKeyDown(KeyCode.E) && StaminaBar.instance.currentStamina == 100 && !isRaging)
         {
+            audioSource.PlayOneShot(playerRageAudio);
+            backgroundAudio.volume = 0.3f;
             StaminaBar.instance.UseStamina(100);
             StartCoroutine(StartRageMode());
         }
 
         PlayerMovement();
-
+        backgroundAudio.volume = 0.3f;
         if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
             StartCoroutine(Attack());
@@ -187,8 +203,9 @@ public class TestMove : MonoBehaviour
 
     public void DecreaseHealth()
     {
-        health -= 2;
-        healthText.text = "Health: " + health.ToString();
+        AudioSource.PlayClipAtPoint(takeDamage, transform.position, 1.0f);
+        Health -= 2;
+        healthText.text = "Health: " + Health.ToString();
     }
 
     private IEnumerator Attack()
@@ -214,6 +231,8 @@ public class TestMove : MonoBehaviour
 
     private IEnumerator StartRageMode()
     {
+       // backgroundAudio.volume = 0f;
+        //AudioSource.PlayClipAtPoint(playerRageAudio, transform.position, 5.0f);
         rageEndTime = Time.time + 30;
         animator.SetFloat("attackMode", 1);
         isRaging = true;
@@ -268,5 +287,6 @@ public class TestMove : MonoBehaviour
         isRaging = false;
         animator.speed = 1.0f;
         animator.SetFloat("attackMode", 0);
+        //backgroundAudio.volume = 0.3f;
     }
 }
