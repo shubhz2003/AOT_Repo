@@ -2,138 +2,116 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 using TMPro;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class UserProfileManager : MonoBehaviour
 {
-    public TMP_InputField usernameInputField;
-    public TMP_Text profileInfoText;
-    public TMP_Text loginMessage;
-    public GameObject loginPage;
-    public GameObject profilePage;
+    [Header("UI Elements")]
+    [SerializeField] private TMP_InputField usernameInputField;
+    [SerializeField] private TMP_Text profileInfoText;
+    [SerializeField] private TMP_Text loginMessage;
+    [SerializeField] private GameObject loginPage;
+    [SerializeField] private GameObject profilePage;
+    [SerializeField] private GameObject loginButton;
+
+    private string currentUsername;
 
     // Start is called before the first frame update
     void Start()
     {
         ShowLoginPage();
+        loginButton.SetActive(false);
     }
 
-    // Method to initiate login or registration
+
+    // Triggered by the login button. Logs in or registers the user based on the username input.
     public void LoginOrRegister()
     {
-        string newUsername = usernameInputField.text;
-        if (!string.IsNullOrEmpty(newUsername))
+        string username = usernameInputField.text.Trim();
+
+        if (string.IsNullOrEmpty(username) || username.Length < 3 || username.Length > 25)
         {
-            CheckUsernameUniqueness(newUsername);
+            loginMessage.text = "Username must be between 3 and 25 characters.";
+            return;
         }
-        else
-        {
-            loginMessage.text = "Please enter a valid username.";
-        }
+
+        currentUsername = username.ToLower(); // Save the username locally
+
+        LoginWithUsername(currentUsername);
     }
 
-    // Check if the username is unique by searching PlayFab
-    void CheckUsernameUniqueness(string username)
+    // Attempts to log in with the given username. If the user doesn't exist, it creates a new account.
+    void LoginWithUsername(string username)
     {
-        var request = new GetAccountInfoRequest
+        var loginRequest = new LoginWithCustomIDRequest
         {
-            Username = username
+            CustomId = username,
+            CreateAccount = true // Creates account if username doesn't exist
         };
 
-        PlayFabClientAPI.GetAccountInfo(
-            request,
-            OnUsernameExists,
-            error =>
-            {
-                //Debug.LogError("Error checking username uniqueness: " + error.GenerateErrorReport());
-                RegisterNewUser(username);
-            }
-        );
+        PlayFabClientAPI.LoginWithCustomID(loginRequest, OnLoginSuccess, OnLoginFailure);
     }
 
-    // If username exists, login the user; otherwise, create a new profile
-    void OnUsernameExists(GetAccountInfoResult result)
+    void OnLoginSuccess(LoginResult result)
     {
-        // User exists, log in using the username
-        //loginMessage.text = "Welcome back!";
-        profileInfoText.text = "Welcome back!" ;
+        Debug.Log($"Successfully logged in as {currentUsername}");
+
+        // Save the username for new accounts
+        SaveUsername(currentUsername);
+
+        // Show profile page with user info
+        profileInfoText.text = $"Welcome, {currentUsername}!";
         ShowProfilePage();
-        GetProfileData();
     }
 
-    // If username is unique, register a new user
-    void RegisterNewUser(string username)
+    void OnLoginFailure(PlayFabError error)
     {
-        // Create a new account for this username
-        var request = new RegisterPlayFabUserRequest
-        {
-            Username = username,
-            DisplayName = username,
-            Password = "default_password", // Default password (for example purposes)
-            RequireBothUsernameAndEmail = false
-        };
-
-        PlayFabClientAPI.RegisterPlayFabUser(request, OnUserRegistered, OnError);
+        Debug.LogError("Login failed: " + error.GenerateErrorReport());
+        loginMessage.text = "Login failed. Please try again.";
     }
 
-    void OnUserRegistered(RegisterPlayFabUserResult result)
+    // Saves the username as the display name in PlayFab.
+    void SaveUsername(string username)
     {
-        //loginMessage.text = "Account created! Welcome, " + result.Username;
-        profileInfoText.text = "Welcome, " + result.Username + "!";
-        ShowProfilePage();
-        SaveUsername(result.Username);
-    }
-
-    // Save the username as display name in PlayFab
-    public void SaveUsername(string username)
-    {
-        var request = new UpdateUserTitleDisplayNameRequest
+        var displayNameRequest = new UpdateUserTitleDisplayNameRequest
         {
             DisplayName = username
         };
 
-        PlayFabClientAPI.UpdateUserTitleDisplayName(request, OnDisplayNameUpdated, OnError);
+        PlayFabClientAPI.UpdateUserTitleDisplayName(displayNameRequest,
+            result =>
+            {
+                Debug.Log($"Display name updated to: {result.DisplayName}");
+                profileInfoText.text = $"Welcome, {result.DisplayName}!";
+            },
+            error =>
+            {
+                Debug.LogError("Failed to update display name: " + error.GenerateErrorReport());
+            });
     }
 
-    void OnDisplayNameUpdated(UpdateUserTitleDisplayNameResult result)
+    // Logs out the user and resets the UI.
+    public void Logout()
     {
-        profileInfoText.text = "Username saved!";
-        GetProfileData();
+        currentUsername = null;
+        usernameInputField.text = string.Empty;
+        loginMessage.text = "Please log in.";
+        profileInfoText.text = string.Empty;
+
+        ShowLoginPage();
     }
 
-    //void OnUsernameUpdated(UpdateUserDataResult result)
-    //{
-    //    profileInfoText.text = "Username saved!";
-    //    GetProfileData();
-    //}
-
-    public void GetProfileData()
-    {
-        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnProfileDataReceived, OnError);
-    }
-
-    void OnProfileDataReceived(GetUserDataResult result)
-    {
-        string username = result.Data.ContainsKey("Username") ? result.Data["Username"].Value : "Guest";
-        profileInfoText.text = $"Username: {username}\nHours Played: 0"; // Placeholder for hours played
-    }
-
-    void OnError(PlayFabError error)
-    {
-        Debug.LogError("Error: " + error.GenerateErrorReport());
-        loginMessage.text = "Error: " + error.ErrorMessage;
-    }
-
-    public void ShowLoginPage()
+    // Shows the login page.
+    void ShowLoginPage()
     {
         loginPage.SetActive(true);
         profilePage.SetActive(false);
     }
 
-    public void ShowProfilePage()
+    // Shows the profile page.
+    void ShowProfilePage()
     {
-        profilePage.SetActive(true);
         loginPage.SetActive(false);
-        GetProfileData();
+        profilePage.SetActive(true);
     }
 }
