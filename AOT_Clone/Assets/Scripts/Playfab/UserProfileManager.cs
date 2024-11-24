@@ -3,6 +3,7 @@ using PlayFab.ClientModels;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class UserProfileManager : MonoBehaviour
 {
@@ -10,11 +11,15 @@ public class UserProfileManager : MonoBehaviour
     [SerializeField] private TMP_InputField usernameInputField;
     [SerializeField] private TMP_Text profileInfoText;
     [SerializeField] private TMP_Text loginMessage;
+    [SerializeField] private TMP_Text totalHoursPlayedText;
     [SerializeField] private GameObject loginPage;
     [SerializeField] private GameObject profilePage;
     [SerializeField] private GameObject loginButton;
 
     private string currentUsername;
+    private DateTime sessionStartTime; // Track session start time
+    private const string TotalHoursKey = "TotalHoursPlayed"; // Key for PlayFab PlayerData
+    private const string LastLoginTimeKey = "LastLoginTime"; // Key for last login time
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +41,7 @@ public class UserProfileManager : MonoBehaviour
         }
 
         currentUsername = username.ToLower(); // Save the username locally
-
+        sessionStartTime = DateTime.UtcNow;
         LoginWithUsername(currentUsername);
     }
 
@@ -59,9 +64,12 @@ public class UserProfileManager : MonoBehaviour
         // Save the username for new accounts
         SaveUsername(currentUsername);
 
+        // Fetch player data to display time played
+        FetchPlayerData();
+
         // Show profile page with user info
-        profileInfoText.text = $"Welcome, {currentUsername}!";
-        ShowProfilePage();
+        //profileInfoText.text = $"Welcome, {currentUsername}!";
+        //ShowProfilePage();
     }
 
     void OnLoginFailure(PlayFabError error)
@@ -90,9 +98,83 @@ public class UserProfileManager : MonoBehaviour
             });
     }
 
+    void FetchPlayerData()
+    {
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result =>
+        {
+            double totalHours = 0;
+            DateTime? lastLoginTime = null;
+
+            // Parse TotalHoursPlayed
+            if (result.Data != null && result.Data.ContainsKey(TotalHoursKey))
+            {
+                double.TryParse(result.Data[TotalHoursKey].Value, out totalHours);
+            }
+
+            // Parse LastLoginTime
+            if (result.Data != null && result.Data.ContainsKey(LastLoginTimeKey))
+            {
+                long ticks;
+                if (long.TryParse(result.Data[LastLoginTimeKey].Value, out ticks))
+                {
+                    lastLoginTime = new DateTime(ticks);
+                }
+            }
+
+            // Calculate hours from the previous session
+            if (lastLoginTime.HasValue)
+            {
+                TimeSpan sessionTime = sessionStartTime - lastLoginTime.Value;
+                totalHours += sessionTime.TotalHours;
+            }
+
+            // Format total time played in hours and minutes
+            TimeSpan totalTimePlayed = TimeSpan.FromHours(totalHours);
+            totalHoursPlayedText.text = $"Total Time Played: {totalTimePlayed.Hours}h {totalTimePlayed.Minutes}m";
+
+            // Save updated data
+            SavePlayerData(totalHours);
+
+            // Show the profile page
+            ShowProfilePage();
+        },
+        error =>
+        {
+            Debug.LogError("Failed to fetch player data: " + error.GenerateErrorReport());
+        });
+    }
+
+    void SavePlayerData(double totalHours)
+    {
+        var userData = new UpdateUserDataRequest
+        {
+            Data = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { TotalHoursKey, totalHours.ToString() },
+                { LastLoginTimeKey, DateTime.UtcNow.Ticks.ToString() } // Save current time
+            }
+        };
+
+        PlayFabClientAPI.UpdateUserData(userData,
+        result => Debug.Log("Player data updated successfully."),
+        error => Debug.LogError("Failed to update player data: " + error.GenerateErrorReport()));
+    }
+
     // Logs out the user and resets the UI.
     public void Logout()
     {
+        // Calculate session time
+        TimeSpan sessionTime = DateTime.UtcNow - sessionStartTime;
+
+        // Fetch and update total hours played
+        double currentTotalHours = 0;
+        if (double.TryParse(totalHoursPlayedText.text.Replace("Total Hours Played: ", ""), out currentTotalHours))
+        {
+            currentTotalHours += sessionTime.TotalHours;
+        }
+
+        SavePlayerData(currentTotalHours);
+
         currentUsername = null;
         usernameInputField.text = string.Empty;
         loginMessage.text = "Please log in.";
