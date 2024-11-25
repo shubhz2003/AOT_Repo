@@ -15,6 +15,7 @@ public class UserProfileManager : MonoBehaviour
     [SerializeField] private GameObject loginPage;
     [SerializeField] private GameObject profilePage;
     [SerializeField] private GameObject loginButton;
+    [SerializeField] private GameObject achievementManager;
 
     private string currentUsername;
     private DateTime sessionStartTime; // Track session start time
@@ -26,6 +27,7 @@ public class UserProfileManager : MonoBehaviour
     {
         ShowLoginPage();
         loginButton.SetActive(false);
+        achievementManager.SetActive(false);
     }
 
 
@@ -66,10 +68,6 @@ public class UserProfileManager : MonoBehaviour
 
         // Fetch player data to display time played
         FetchPlayerData();
-
-        // Show profile page with user info
-        //profileInfoText.text = $"Welcome, {currentUsername}!";
-        //ShowProfilePage();
     }
 
     void OnLoginFailure(PlayFabError error)
@@ -134,6 +132,8 @@ public class UserProfileManager : MonoBehaviour
 
             // Save updated data
             SavePlayerData(totalHours);
+
+            achievementManager.SetActive(true); 
 
             // Show the profile page
             ShowProfilePage();
